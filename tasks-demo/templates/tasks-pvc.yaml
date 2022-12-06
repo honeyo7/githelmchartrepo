@@ -1,0 +1,44 @@
+apiVersion: storage.k8s.io/v1
+kind: CSIDriver
+metadata:
+  name: efs.csi.aws.com
+spec:
+  attachRequired: false
+
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.tasks.volumeEfs.persistentVolumeClaimName }}
+spec:
+  accessModes:
+    {{- range .Values.tasks.volumeEfs.accessModes}}
+    - {{.}}
+    {{- end}}
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: {{ .Values.tasks.volumeEfs.storage }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.tasks.volumeEfs.persistentVolumeName }}
+spec:
+  capacity:
+    storage: {{ .Values.tasks.volumeEfs.storage }}
+  volumeMode: Filesystem
+  accessModes:
+    {{- range .Values.tasks.volumeEfs.accessModes}}
+    - {{.}}
+    {{- end}}
+  storageClassName: efs-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .Values.tasks.volumeEfs.volumeHandle }}

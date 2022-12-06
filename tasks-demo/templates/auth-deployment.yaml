@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.auth.appName }}
+spec:
+  {{- if not .Values.auth.autoscaling.enabled }}
+  replicas: {{ .Values.auth.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- toYaml .Values.auth.selectorLabels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- toYaml .Values.auth.selectorLabels | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.auth.appName }}
+          image: "{{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}"
+          {{- if .Values.auth.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.auth.livenessProbe.path }}
+              port: {{ .Values.auth.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.auth.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.auth.livenessProbe.periodSeconds }}
+          {{- end }}
+          {{- if .Values.auth.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.auth.readinessProbe.path }}
+              port: {{ .Values.auth.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.auth.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.auth.readinessProbe.periodSeconds }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.auth.resources | nindent 12 }}
+

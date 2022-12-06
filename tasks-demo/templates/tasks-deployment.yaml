@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.tasks.appName }}
+spec:
+  {{- if not .Values.tasks.autoscaling.enabled }}
+  replicas: {{ .Values.tasks.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- toYaml .Values.tasks.selectorLabels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- toYaml .Values.tasks.selectorLabels | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.tasks.appName }}
+          image: "{{ .Values.tasks.image.repository }}:{{ .Values.tasks.image.tag }}"
+          {{- if .Values.tasks.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.tasks.livenessProbe.path }}
+              port: {{ .Values.tasks.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.tasks.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.tasks.livenessProbe.periodSeconds }}
+          {{- end }}
+          {{- if .Values.tasks.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.tasks.readinessProbe.path }}
+              port: {{ .Values.tasks.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.tasks.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.tasks.readinessProbe.periodSeconds }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.tasks.resources | nindent 12 }}
+          env:
+          {{- range .Values.tasks.image.env }}
+            - name: {{.name}}
+              value: {{.value}}
+          {{- end}}
+          volumeMounts:
+            - mountPath: {{ .Values.tasks.volumeEfs.mountPath }}
+              name: {{ .Values.tasks.volumeEfs.volumeName }}
+      volumes:
+        - name: {{ .Values.tasks.volumeEfs.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.tasks.volumeEfs.persistentVolumeClaimName }}
+

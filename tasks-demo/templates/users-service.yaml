@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.users.appName }}
+spec:
+  type: {{ .Values.users.service.type }}
+  ports:
+    - port: {{ .Values.users.service.port }}
+      targetPort: {{ .Values.users.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- toYaml .Values.users.selectorLabels | nindent 4 }}

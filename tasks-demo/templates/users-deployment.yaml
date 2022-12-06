@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.users.appName }}
+spec:
+  {{- if not .Values.users.autoscaling.enabled }}
+  replicas: {{ .Values.users.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- toYaml .Values.users.selectorLabels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- toYaml .Values.users.selectorLabels | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.users.appName }}
+          image: "{{ .Values.users.image.repository }}:{{ .Values.users.image.tag }}"
+          {{- if .Values.users.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.users.livenessProbe.path }}
+              port: {{ .Values.users.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.users.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.users.livenessProbe.periodSeconds }}
+          {{- end }}
+          {{- if .Values.users.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.users.readinessProbe.path }}
+              port: {{ .Values.users.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.users.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.users.readinessProbe.periodSeconds }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.users.resources | nindent 12 }}
+
