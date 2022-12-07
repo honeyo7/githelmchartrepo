@@ -25,6 +25,6 @@ spec:
         name: memory
         target:
           type: AverageValue
-          averageUtilization: {{ .Values.tasks.autoscaling.targetMemoryAverageValue }}
+          averageValue: {{ .Values.tasks.autoscaling.targetMemoryAverageValue }}
     {{- end }}
 {{- end }}
