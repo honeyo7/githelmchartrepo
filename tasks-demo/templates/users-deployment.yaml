@@ -35,4 +35,9 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.users.resources | nindent 12 }}
+          env:
+          {{- range .Values.users.image.env }}
+            - name: {{.name}}
+              value: {{.value}}
+          {{- end}}
 

@@ -60,6 +60,9 @@ users:
     repository: honeyo7/kub-demo-users
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
+    env:
+      - name: AUTH_ADDRESS
+        value: "auth.default"
 
   service:
     type: NodePort
