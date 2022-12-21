@@ -3,12 +3,12 @@ entries:
   tasks-demo:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-12-07T22:02:31.5979011+05:30"
+    created: "2022-12-21T17:07:51.3416896+05:30"
     description: A Helm chart for task demo
-    digest: 1cfb45ab840d3bb4d6f324f024175e5dee4c7fa21400415583b749e9c58190aa
+    digest: 5d3278d17b351b2f199c0d948014932893d51aa7aa4c3877345f863e4a2e4499
     name: tasks-demo
     type: application
     urls:
     - tasks-demo-0.1.0.tgz
     version: 0.1.0
-generated: "2022-12-07T22:02:31.5948633+05:30"
+generated: "2022-12-21T17:07:51.3363818+05:30"

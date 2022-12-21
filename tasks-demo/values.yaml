@@ -10,7 +10,7 @@ auth:
   replicaCount: 1
 
   image:
-    repository: honeyo7/kub-demo-auth
+    repository: 285461333388.dkr.ecr.us-east-1.amazonaws.com/eks-demo-auth
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
 
@@ -57,7 +57,7 @@ users:
   replicaCount: 1
 
   image:
-    repository: honeyo7/kub-demo-users
+    repository: 285461333388.dkr.ecr.us-east-1.amazonaws.com/eks-demo-users
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
     env:
@@ -107,7 +107,7 @@ tasks:
   replicaCount: 1
 
   image:
-    repository: honeyo7/kub-demo-tasks
+    repository: 285461333388.dkr.ecr.us-east-1.amazonaws.com/eks-demo-tasks
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
     env:
